@@ -3,8 +3,8 @@
 //  Speech SDK (AvatarSynthesizer) + WebRTC + Kimi-K2.5
 // ═══════════════════════════════════════════════════════
 
-// ── Backend URL (swap with production URL once deployed) ─
-const BACKEND_URL = 'http://172.20.10.4:3000';
+// ── Backend URL (production) ──────────────────────────
+const BACKEND_URL = 'https://stillwater-zafy.onrender.com';
 
 const SpeechSDK = window.SpeechSDK;
 
@@ -139,7 +139,10 @@ async function fetchSpeechToken() {
         console.log('[Token Status] Requesting speech authorization token…');
         setLoading('Acquiring neural token…');
 
-        const response = await fetch(`${BACKEND_URL}/api/get-speech-token`, { method: 'POST' });
+        const response = await fetch(`${BACKEND_URL}/api/get-speech-token`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        });
         if (!response.ok) {
             const err = await response.json();
             throw new Error(`HTTP ${response.status}: ${err.error || 'Unknown error'}`);
@@ -160,7 +163,10 @@ async function fetchIceToken() {
         console.log('[WebSocket Status] Requesting ICE relay token…');
         setLoading('Establishing relay channel…');
 
-        const response = await fetch(`${BACKEND_URL}/api/get-ice-token`);
+        const response = await fetch(`${BACKEND_URL}/api/get-ice-token`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
         if (!response.ok) {
             const err = await response.json();
             throw new Error(`HTTP ${response.status}: ${err.error || 'Unknown error'}`);
@@ -589,7 +595,39 @@ function speakNext(text, endingSilenceMs = 0) {
     );
 }
 
-// ── 6. Boot Sequence ───────────────────────────────────
+// ── 6. Backend Health Check ────────────────────────────
+const backendDot = document.createElement('div');
+backendDot.id = 'backend-health-dot';
+document.body.appendChild(backendDot);
+
+const backendLabel = document.createElement('span');
+backendLabel.id = 'backend-health-label';
+backendLabel.textContent = 'BACKEND';
+document.body.appendChild(backendLabel);
+
+async function checkBackendHealth() {
+    try {
+        const res = await fetch(`${BACKEND_URL}/api/get-speech-token`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: AbortSignal.timeout(5000),
+        });
+        // Even a 4xx/5xx means the server is reachable
+        backendDot.className = 'alive';
+        backendLabel.className = 'alive';
+        console.log('[Health] ✓ Backend reachable');
+    } catch (err) {
+        backendDot.className = 'dead';
+        backendLabel.className = 'dead';
+        console.warn('[Health] ✗ Backend unreachable:', err.message);
+    }
+}
+
+// Ping immediately + every 30s
+checkBackendHealth();
+setInterval(checkBackendHealth, 30000);
+
+// ── 7. Boot Sequence ───────────────────────────────────
 async function boot() {
     try {
         console.log('═══════════════════════════════════════');

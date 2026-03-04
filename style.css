@@ -459,3 +459,49 @@ body {
   border-color: rgba(255, 255, 255, 0.15);
   transform: scale(1.08);
 }
+
+/* ── Backend Health Indicator ──────────────────────── */
+#backend-health-dot {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  z-index: 200;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: none;
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+#backend-health-dot.alive {
+  background: #4ae68a;
+  box-shadow: 0 0 8px #4ae68a, 0 0 2px #4ae68a;
+}
+
+#backend-health-dot.dead {
+  background: #e84057;
+  box-shadow: 0 0 8px #e84057, 0 0 2px #e84057;
+}
+
+#backend-health-label {
+  position: fixed;
+  top: 15px;
+  left: 30px;
+  z-index: 200;
+  font-family: var(--font-ui);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.2);
+  transition: color 0.4s ease;
+}
+
+#backend-health-label.alive {
+  color: rgba(74, 230, 138, 0.7);
+}
+
+#backend-health-label.dead {
+  color: rgba(232, 64, 87, 0.7);
+}
