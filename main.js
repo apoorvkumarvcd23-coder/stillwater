@@ -2,6 +2,10 @@
 //  Stillwater VR — AI Orchestration Layer (main.js)
 //  Speech SDK (AvatarSynthesizer) + WebRTC + Kimi-K2.5
 // ═══════════════════════════════════════════════════════
+// ── Hard Reset: kill stale tokens ─────────────────────
+window.sessionStorage.clear();
+window.localStorage.clear();
+console.log('[RESET] Session & local storage cleared');
 
 // ── Backend URL (production) ──────────────────────────
 const BACKEND_URL = 'https://stillwater-zafy.onrender.com';
@@ -312,7 +316,7 @@ async function setupWebRTC(iceData) {
     peerConnection.addTransceiver('audio', { direction: 'sendrecv' });
 
     // Start avatar session
-    console.log('Sending Lisa Rescue Manifest: ' + JSON.stringify({ talkingAvatarCharacter: 'lisa', talkingAvatarStyle: 'graceful', voiceName: 'en-US-AvaMultilingualNeural' }));
+    console.log('Final Handshake Check:', { character: 'lisa', style: 'graceful', voice: 'en-US-AvaMultilingualNeural' });
     setLoading('Summoning the Guide…');
 
     const result = await avatarSynthesizer.startAvatarAsync(peerConnection);
