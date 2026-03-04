@@ -25,8 +25,8 @@ let messages = [];
 
 const SENTENCE_PUNCTUATIONS = ['.', '?', '!', ':', ';', '。', '？', '！', '：', '；'];
 const AVATAR_CHARACTER = 'lisa';
-const AVATAR_STYLE = 'graceful-sitting';
-const TTS_VOICE = 'en-US-AvaMultilingualNeural';
+const AVATAR_STYLE = 'casual-sitting';
+const TTS_VOICE = 'en-US-JennyNeural';
 
 // ── DOM References ─────────────────────────────────────
 const $ = (id) => document.getElementById(id);
@@ -196,8 +196,8 @@ async function initializeAvatar(authToken, region, iceData) {
         // Speech config from auth token
         const speechConfig = SpeechSDK.SpeechConfig.fromAuthorizationToken(authToken, region);
 
-        // Avatar config (Hardcoded baseline)
-        const avatarConfig = new SpeechSDK.AvatarConfig('lisa', 'graceful-sitting');
+        // Avatar config (Hardcoded baseline - universally supported 'casual-sitting')
+        const avatarConfig = new SpeechSDK.AvatarConfig('lisa', 'casual-sitting');
 
         // Create avatar synthesizer
         avatarSynthesizer = new SpeechSDK.AvatarSynthesizer(speechConfig, avatarConfig);
@@ -318,7 +318,7 @@ async function setupWebRTC(iceData) {
     peerConnection.addTransceiver('audio', { direction: 'sendrecv' });
 
     // Start avatar session
-    console.log('Final Handshake Check:', { character: 'lisa', style: 'graceful-sitting', voice: 'en-US-AvaMultilingualNeural' });
+    console.log('Final Handshake Check:', { character: 'lisa', style: 'casual-sitting', voice: 'en-US-JennyNeural' });
     setLoading('Summoning the Guide…');
 
     // Give Render backend a 2s window to solidify the WebSocket before streaming
@@ -335,7 +335,7 @@ async function setupWebRTC(iceData) {
             const details = SpeechSDK.CancellationDetails.fromResult(result);
             console.error('[WebSocket Status] Cancellation details:', details.errorDetails);
             console.error('CRITICAL FAILURE:', details.errorDetails);
-            console.log('Last Known State:', { character: 'lisa', style: 'graceful-sitting' });
+            console.log('Last Known State:', { character: 'lisa', style: 'casual-sitting' });
             console.dir(details, { depth: null });
             throw new Error(details.errorDetails);
         }
