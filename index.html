@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Stillwater VR — Immersive AI Avatar Experience" />
+  <title>Stillwater VR</title>
+  <link rel="stylesheet" href="/style.css" />
+
+  <!-- Azure Speech SDK (browser bundle) -->
+  <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+</head>
+
+<body>
+
+  <!-- Background video is now per-eye (inside each eye panel for SBS stereo) -->
+
+  <!-- ═══ Local Video File Picker ═══ -->
+  <input type="file" id="bg-video-input" accept="video/*" class="hidden" />
+  <button class="bg-picker-btn" id="bg-picker-btn" title="Load background video">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"
+      stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="3" />
+      <polygon points="10,8 16,12 10,16" />
+    </svg>
+  </button>
+
+  <!-- ═══ Loading Screen ═══ -->
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="loading-title">Stillwater</div>
+    <div class="loading-spinner"></div>
+    <div class="loading-subtitle" id="loading-status">Initializing neural bridge…</div>
+  </div>
+
+  <!-- ═══ Stereo Divider ═══ -->
+  <div class="stereo-divider"></div>
+
+  <!-- ═══ VR Container (SBS Stereo) ═══ -->
+  <div id="vr-container">
+
+    <!-- ─── Left Eye ─── -->
+    <div class="eye-panel" id="left-eye">
+
+      <!-- Background Video (ZERO offset — infinity depth) -->
+      <video class="cinema-bg-eye" id="cinema-bg-left" autoplay muted loop playsinline></video>
+
+      <!-- Avatar Guide Widget (IPD offset: -12px) -->
+      <div class="avatar-widget avatar-widget--left">
+        <video class="avatar-video" id="avatar-video-left" autoplay playsinline muted></video>
+      </div>
+
+      <!-- Transcript -->
+      <div class="transcript-panel">
+        <div class="transcript-text" id="transcript-left"></div>
+      </div>
+
+      <!-- Subtitle -->
+      <div class="subtitle-bar">
+        <div class="subtitle-text" id="subtitle-left"></div>
+      </div>
+
+      <!-- HUD -->
+      <div class="hud-overlay">
+        <div class="status-bar">
+          <div class="status-dot" id="status-dot-left"></div>
+          <span class="status-text" id="status-text-left">Connecting…</span>
+        </div>
+        <div class="mic-container">
+          <button class="mic-btn" id="mic-btn-left" aria-label="Toggle microphone">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z" />
+              <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+              <line x1="12" y1="19" x2="12" y2="23" />
+              <line x1="8" y1="23" x2="16" y2="23" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Right Eye ─── -->
+    <div class="eye-panel" id="right-eye">
+
+      <!-- Background Video (ZERO offset — infinity depth) -->
+      <video class="cinema-bg-eye" id="cinema-bg-right" autoplay muted loop playsinline></video>
+
+      <!-- Avatar Guide Widget (IPD offset: +12px) -->
+      <div class="avatar-widget avatar-widget--right">
+        <video class="avatar-video" id="avatar-video-right" autoplay playsinline muted></video>
+      </div>
+
+      <div class="kanji-watermark">神託</div>
+
+      <div class="transcript-panel">
+        <div class="transcript-text" id="transcript-right"></div>
+      </div>
+
+      <div class="subtitle-bar">
+        <div class="subtitle-text" id="subtitle-right"></div>
+      </div>
+
+      <div class="hud-overlay">
+        <div class="status-bar">
+          <div class="status-dot" id="status-dot-right"></div>
+          <span class="status-text" id="status-text-right">Connecting…</span>
+        </div>
+        <div class="mic-container">
+          <button class="mic-btn" id="mic-btn-right" aria-label="Toggle microphone">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 1a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V5a4 4 0 0 0-4-4z" />
+              <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+              <line x1="12" y1="19" x2="12" y2="23" />
+              <line x1="8" y1="23" x2="16" y2="23" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Hidden audio element for avatar audio -->
+  <div id="remoteAudio" style="display:none;"></div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>

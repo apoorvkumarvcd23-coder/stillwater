@@ -1,0 +1,21 @@
+{
+  "name": "iruzu-oracle-vr",
+  "version": "1.0.0",
+  "description": "Iruzu Oracle VR — WebVR interface with Azure AI Avatar and Kimi-K2.5 Brain",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node backend/server.js",
+    "client": "vite"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "vite": "^6.2.0"
+  }
+}

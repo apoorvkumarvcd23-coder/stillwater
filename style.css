@@ -1,0 +1,461 @@
+/* ═══════════════════════════════════════════════════════
+   Stillwater VR — Cinematic Layered VR Theme
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Google Font ────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;700&family=Inter:wght@300;400;600&display=swap');
+
+/* ── CSS Custom Properties ──────────────────────────── */
+:root {
+  --bg-void: #000000;
+  --surface-glass: rgba(255, 255, 255, 0.04);
+  --surface-glow: rgba(255, 255, 255, 0.08);
+  --border-glass: rgba(255, 255, 255, 0.10);
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-muted: rgba(255, 255, 255, 0.45);
+  --accent-sakura: #e8a0bf;
+  --accent-wisteria: #9b8ec4;
+  --accent-indigo: #5b6abf;
+  --accent-crimson: #c43e5c;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-widget: 20px;
+  --font-jp: 'Noto Sans JP', sans-serif;
+  --font-ui: 'Inter', sans-serif;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Reset & Base ───────────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg-void);
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LAYER 1: CINEMATIC BACKGROUND VIDEO (per-eye)
+   Zero horizontal offset → appears at infinity depth
+   Each eye panel has its own copy for proper SBS stereo
+   ═══════════════════════════════════════════════════════ */
+.cinema-bg-eye {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LAYER 2: VR STEREO CONTAINER (SBS)
+   ═══════════════════════════════════════════════════════ */
+#vr-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.eye-panel {
+  width: 50vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LAYER 3: AVATAR GUIDE WIDGET
+   30vh tall, bottom-left corner, floating high-tech widget
+   IPD offsets: -12px left, +12px right (closer to user)
+   ═══════════════════════════════════════════════════════ */
+.avatar-widget {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  height: 30vh;
+  width: auto;
+  aspect-ratio: 9 / 16;
+  z-index: 5;
+  border-radius: var(--radius-widget);
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #000000;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* IPD depth offsets — avatar floats CLOSER than background */
+.avatar-widget--left {
+  transform: translateX(-12px);
+}
+
+.avatar-widget--right {
+  transform: translateX(12px);
+}
+
+.avatar-widget .avatar-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-widget);
+  display: block;
+}
+
+/* ── Kanji Watermark ────────────────────────────────── */
+.kanji-watermark {
+  position: absolute;
+  bottom: 12%;
+  right: 8%;
+  font-family: var(--font-jp);
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 100;
+  color: rgba(255, 255, 255, 0.04);
+  z-index: 2;
+  user-select: none;
+  pointer-events: none;
+  writing-mode: vertical-rl;
+  letter-spacing: 0.3em;
+}
+
+/* ═══════════════════════════════════════════════════════
+   HUD OVERLAY
+   ═══════════════════════════════════════════════════════ */
+.hud-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 4vh;
+  pointer-events: none;
+}
+
+/* ── Status Bar ─────────────────────────────────────── */
+.status-bar {
+  background: var(--surface-glass);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 6px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+  transition: var(--transition);
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-sakura);
+  box-shadow: 0 0 8px var(--accent-sakura);
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+.status-dot.connected {
+  background: #4ae68a;
+  box-shadow: 0 0 8px #4ae68a;
+}
+
+.status-dot.error {
+  background: var(--accent-crimson);
+  box-shadow: 0 0 8px var(--accent-crimson);
+  animation: none;
+}
+
+@keyframes statusPulse {
+
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.status-text {
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FLOATING MICROPHONE BUTTON
+   Translucent circle — doesn't obstruct background
+   ═══════════════════════════════════════════════════════ */
+.mic-container {
+  pointer-events: auto;
+}
+
+.mic-btn {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  outline: none;
+}
+
+.mic-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.08);
+}
+
+.mic-btn:active {
+  transform: scale(0.94);
+}
+
+.mic-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.6);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: var(--transition);
+}
+
+.mic-btn.listening {
+  border-color: var(--accent-sakura);
+  box-shadow: 0 0 28px rgba(232, 160, 191, 0.2);
+  background: rgba(232, 160, 191, 0.06);
+}
+
+.mic-btn.listening svg {
+  stroke: var(--accent-sakura);
+}
+
+/* ── Mic Pulse Rings ────────────────────────────────── */
+.mic-btn.listening::before,
+.mic-btn.listening::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-sakura);
+  animation: micPulse 2s ease-out infinite;
+}
+
+.mic-btn.listening::after {
+  animation-delay: 1s;
+}
+
+@keyframes micPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   TRANSCRIPT & SUBTITLES
+   ═══════════════════════════════════════════════════════ */
+.transcript-panel {
+  position: absolute;
+  top: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  max-width: 80%;
+  text-align: center;
+  pointer-events: none;
+}
+
+.transcript-text {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--text-primary);
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.transcript-text.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.subtitle-bar {
+  position: absolute;
+  bottom: 16vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  max-width: 70%;
+  pointer-events: none;
+}
+
+.subtitle-text {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1.5;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.subtitle-text.visible {
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LOADING STATE
+   ═══════════════════════════════════════════════════════ */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg-void);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  transition: opacity 0.8s ease;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-title {
+  font-family: var(--font-jp);
+  font-size: 24px;
+  font-weight: 100;
+  letter-spacing: 0.4em;
+  color: var(--text-primary);
+}
+
+.loading-subtitle {
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--border-glass);
+  border-top-color: var(--accent-wisteria);
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Stereo Divider ─────────────────────────────────── */
+.stereo-divider {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.03);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ── Utility ────────────────────────────────────────── */
+.hidden {
+  display: none !important;
+}
+
+/* ── Background Video Picker Button ─────────────────── */
+.bg-picker-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 50;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.4);
+  transition: var(--transition);
+  outline: none;
+}
+
+.bg-picker-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.08);
+}
