@@ -24,8 +24,8 @@ let sessionActive = false;
 let messages = [];
 
 const SENTENCE_PUNCTUATIONS = ['.', '?', '!', ':', ';', '。', '？', '！', '：', '；'];
-const AVATAR_CHARACTER = 'lisa';
-const AVATAR_STYLE = 'graceful';
+const AVATAR_CHARACTER = 'Lisa';
+const AVATAR_STYLE = 'graceful-sitting';
 const TTS_VOICE = 'en-US-AvaMultilingualNeural';
 
 // ── DOM References ─────────────────────────────────────
