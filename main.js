@@ -20,9 +20,9 @@ let sessionActive = false;
 let messages = [];
 
 const SENTENCE_PUNCTUATIONS = ['.', '?', '!', ':', ';', '。', '？', '！', '：', '；'];
-const AVATAR_CHARACTER = 'jeff';
+const AVATAR_CHARACTER = 'Andrew';
 const AVATAR_STYLE = 'casual-sitting';
-const TTS_VOICE = 'en-US-DavisNeural';
+const TTS_VOICE = 'en-US-AndrewMultilingualNeural';
 
 // ── DOM References ─────────────────────────────────────
 const $ = (id) => document.getElementById(id);
@@ -311,7 +311,7 @@ async function setupWebRTC(iceData) {
     peerConnection.addTransceiver('audio', { direction: 'sendrecv' });
 
     // Start avatar session
-    console.log('[WebSocket Status] Starting avatar via startAvatarAsync…');
+    console.log(`[WebSocket Status] Starting avatar → character: "${AVATAR_CHARACTER}", style: "${AVATAR_STYLE}", voice: "${TTS_VOICE}"`);
     setLoading('Summoning the Guide…');
 
     const result = await avatarSynthesizer.startAvatarAsync(peerConnection);
