@@ -24,9 +24,9 @@ let sessionActive = false;
 let messages = [];
 
 const SENTENCE_PUNCTUATIONS = ['.', '?', '!', ':', ';', '。', '？', '！', '：', '；'];
-const AVATAR_CHARACTER = 'Lisa';
-const AVATAR_STYLE = 'graceful-sitting';
-const TTS_VOICE = 'en-US-AvaMultilingualNeural';
+const AVATAR_CHARACTER = 'harry';
+const AVATAR_STYLE = 'business';
+const TTS_VOICE = 'en-US-AndrewNeural';
 
 // ── DOM References ─────────────────────────────────────
 const $ = (id) => document.getElementById(id);
@@ -316,7 +316,7 @@ async function setupWebRTC(iceData) {
     peerConnection.addTransceiver('audio', { direction: 'sendrecv' });
 
     // Start avatar session
-    console.log('Final Handshake Check:', { character: 'lisa', style: 'graceful', voice: 'en-US-AvaMultilingualNeural' });
+    console.log('Final Handshake Check:', { character: 'harry', style: 'business', voice: 'en-US-AndrewNeural' });
     setLoading('Summoning the Guide…');
 
     const result = await avatarSynthesizer.startAvatarAsync(peerConnection);
