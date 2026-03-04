@@ -24,9 +24,9 @@ let sessionActive = false;
 let messages = [];
 
 const SENTENCE_PUNCTUATIONS = ['.', '?', '!', ':', ';', '。', '？', '！', '：', '；'];
-const AVATAR_CHARACTER = 'kai';
-const AVATAR_STYLE = 'standard';
-const TTS_VOICE = 'en-US-KaiNeural';
+const AVATAR_CHARACTER = 'lisa';
+const AVATAR_STYLE = 'graceful-sitting';
+const TTS_VOICE = 'en-US-AvaMultilingualNeural';
 
 // ── DOM References ─────────────────────────────────────
 const $ = (id) => document.getElementById(id);
@@ -145,6 +145,7 @@ async function fetchSpeechToken() {
 
         const response = await fetch(`${BACKEND_URL}/api/get-speech-token`, {
             method: 'POST',
+            mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
         });
         if (!response.ok) {
@@ -169,6 +170,7 @@ async function fetchIceToken() {
 
         const response = await fetch(`${BACKEND_URL}/api/get-ice-token`, {
             method: 'GET',
+            mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
         });
         if (!response.ok) {
@@ -194,8 +196,8 @@ async function initializeAvatar(authToken, region, iceData) {
         // Speech config from auth token
         const speechConfig = SpeechSDK.SpeechConfig.fromAuthorizationToken(authToken, region);
 
-        // Avatar config
-        const avatarConfig = new SpeechSDK.AvatarConfig(AVATAR_CHARACTER, AVATAR_STYLE);
+        // Avatar config (Hardcoded baseline)
+        const avatarConfig = new SpeechSDK.AvatarConfig('lisa', 'graceful-sitting');
 
         // Create avatar synthesizer
         avatarSynthesizer = new SpeechSDK.AvatarSynthesizer(speechConfig, avatarConfig);
@@ -316,11 +318,11 @@ async function setupWebRTC(iceData) {
     peerConnection.addTransceiver('audio', { direction: 'sendrecv' });
 
     // Start avatar session
-    console.log('Final Handshake Check:', { character: 'kai', style: 'standard', voice: 'en-US-KaiNeural' });
+    console.log('Final Handshake Check:', { character: 'lisa', style: 'graceful-sitting', voice: 'en-US-AvaMultilingualNeural' });
     setLoading('Summoning the Guide…');
 
-    // Give Render backend a 3s window to solidify the WebSocket before streaming
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    // Give Render backend a 2s window to solidify the WebSocket before streaming
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     const result = await avatarSynthesizer.startAvatarAsync(peerConnection);
 
@@ -332,6 +334,8 @@ async function setupWebRTC(iceData) {
         if (result.reason === SpeechSDK.ResultReason.Canceled) {
             const details = SpeechSDK.CancellationDetails.fromResult(result);
             console.error('[WebSocket Status] Cancellation details:', details.errorDetails);
+            console.error('CRITICAL FAILURE:', details.errorDetails);
+            console.log('Last Known State:', { character: 'lisa', style: 'graceful-sitting' });
             console.dir(details, { depth: null });
             throw new Error(details.errorDetails);
         }
@@ -458,6 +462,7 @@ async function handleUserQuery(userText) {
 
         const response = await fetch(`${BACKEND_URL}/api/chat`, {
             method: 'POST',
+            mode: 'cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ messages }),
         });
