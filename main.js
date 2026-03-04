@@ -20,9 +20,9 @@ let sessionActive = false;
 let messages = [];
 
 const SENTENCE_PUNCTUATIONS = ['.', '?', '!', ':', ';', '。', '？', '！', '：', '；'];
-const AVATAR_CHARACTER = 'lisa';
+const AVATAR_CHARACTER = 'jeff';
 const AVATAR_STYLE = 'casual-sitting';
-const TTS_VOICE = 'en-US-JennyNeural';
+const TTS_VOICE = 'en-US-DavisNeural';
 
 // ── DOM References ─────────────────────────────────────
 const $ = (id) => document.getElementById(id);
