@@ -3,7 +3,7 @@
 //  Speech SDK (AvatarSynthesizer) + WebRTC + Kimi-K2.5
 // ═══════════════════════════════════════════════════════
 
-// ── Backend URL (update this when backend is deployed) ─
+// ── Backend URL (swap with production URL once deployed) ─
 const BACKEND_URL = 'http://172.20.10.4:3000';
 
 const SpeechSDK = window.SpeechSDK;

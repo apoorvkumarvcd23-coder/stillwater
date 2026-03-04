@@ -8,14 +8,7 @@ const app = express();
 const PORT = 3000;
 
 // ── CORS ──────────────────────────────────────────────
-app.use(cors({
-    origin: [
-        'http://localhost:5173',
-        'http://localhost:5174',
-        'http://172.20.10.4:5173',
-        'http://172.20.10.4:5174',
-    ],
-}));
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174'] }));
 app.use(express.json());
 
 // ── POST /api/get-speech-token ────────────────────────

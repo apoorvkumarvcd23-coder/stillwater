@@ -4,6 +4,7 @@
   "description": "Iruzu Oracle VR — WebVR interface with Azure AI Avatar and Kimi-K2.5 Brain",
   "type": "module",
   "scripts": {
+    "start": "node backend/server.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node backend/server.js",
     "client": "vite"
