@@ -1,5 +1,9 @@
 // backend/server.js — Stillwater VR Token Proxy
-import 'dotenv/config';
+
+// Gracefully load .env for local dev — skip silently on Render
+import { config as dotenvConfig } from 'dotenv';
+try { dotenvConfig(); } catch (_) { /* no .env file — using injected env vars */ }
+
 import express from 'express';
 import cors from 'cors';
 import fetch from 'node-fetch';
@@ -7,9 +11,29 @@ import fetch from 'node-fetch';
 const app = express();
 const PORT = 3000;
 
-// ── CORS ──────────────────────────────────────────────
+// ── CORS ──────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
+
+// ── Startup Environment Check ─────────────────────────────
+console.log('\n[ENV CHECK] Verifying environment variables…');
+const requiredVars = [
+    'AZURE_SPEECH_KEY',
+    'AZURE_SPEECH_REGION',
+    'AZURE_OPENAI_KEY',
+    'AZURE_OPENAI_ENDPOINT',
+    'AZURE_OPENAI_DEPLOYMENT',
+];
+let envOk = true;
+for (const v of requiredVars) {
+    if (process.env[v]) {
+        console.log(`[ENV CHECK] ✓ ${v} = set (${process.env[v].substring(0, 4)}…)`);
+    } else {
+        console.error(`[ENV CHECK] ✗ ${v} = MISSING`);
+        envOk = false;
+    }
+}
+console.log(envOk ? '[ENV CHECK] ✓ All variables present.\n' : '[ENV CHECK] ✗ Some variables are MISSING — endpoints will fail.\n');
 
 // ── POST /api/get-speech-token ────────────────────────
 // Exchanges the subscription key for a short-lived JWT
@@ -18,8 +42,11 @@ app.post('/api/get-speech-token', async (req, res) => {
     const speechRegion = process.env.AZURE_SPEECH_REGION;
 
     if (!speechKey || !speechRegion) {
-        console.error('[Token Status] ✗ Missing AZURE_SPEECH_KEY or AZURE_SPEECH_REGION in .env');
-        return res.status(500).json({ error: 'Server misconfiguration: missing speech credentials.' });
+        const missing = [];
+        if (!speechKey) missing.push('AZURE_SPEECH_KEY');
+        if (!speechRegion) missing.push('AZURE_SPEECH_REGION');
+        console.error(`[Token Status] ✗ MISSING env vars: ${missing.join(', ')}`);
+        return res.status(500).json({ error: `Server misconfiguration: missing ${missing.join(', ')}` });
     }
 
     try {
@@ -59,8 +86,11 @@ app.get('/api/get-ice-token', async (req, res) => {
     const speechRegion = process.env.AZURE_SPEECH_REGION;
 
     if (!speechKey || !speechRegion) {
-        console.error('[WebSocket Status] ✗ Missing credentials for ICE token');
-        return res.status(500).json({ error: 'Server misconfiguration.' });
+        const missing = [];
+        if (!speechKey) missing.push('AZURE_SPEECH_KEY');
+        if (!speechRegion) missing.push('AZURE_SPEECH_REGION');
+        console.error(`[WebSocket Status] ✗ MISSING env vars: ${missing.join(', ')}`);
+        return res.status(500).json({ error: `Server misconfiguration: missing ${missing.join(', ')}` });
     }
 
     try {
@@ -98,8 +128,12 @@ app.post('/api/chat', async (req, res) => {
     const deployment = process.env.AZURE_OPENAI_DEPLOYMENT;
 
     if (!endpoint || !apiKey || !deployment) {
-        console.error('[Kimi Handshake] ✗ Missing Azure OpenAI config in .env');
-        return res.status(500).json({ error: 'Server misconfiguration: missing OpenAI credentials.' });
+        const missing = [];
+        if (!endpoint) missing.push('AZURE_OPENAI_ENDPOINT');
+        if (!apiKey) missing.push('AZURE_OPENAI_KEY');
+        if (!deployment) missing.push('AZURE_OPENAI_DEPLOYMENT');
+        console.error(`[Kimi Handshake] ✗ MISSING env vars: ${missing.join(', ')}`);
+        return res.status(500).json({ error: `Server misconfiguration: missing ${missing.join(', ')}` });
     }
 
     try {
@@ -149,4 +183,10 @@ app.listen(PORT, () => {
     console.log(`║     GET  /api/get-ice-token                  ║`);
     console.log(`║     POST /api/chat                           ║`);
     console.log(`╚══════════════════════════════════════════════╝\n`);
+    console.log('Credentials detected:');
+    console.log('  Azure Speech Key:', !!process.env.AZURE_SPEECH_KEY);
+    console.log('  Azure Speech Region:', !!process.env.AZURE_SPEECH_REGION);
+    console.log('  Azure OpenAI Key:', !!process.env.AZURE_OPENAI_KEY);
+    console.log('  Azure OpenAI Endpoint:', !!process.env.AZURE_OPENAI_ENDPOINT);
+    console.log('  Azure OpenAI Deployment:', !!process.env.AZURE_OPENAI_DEPLOYMENT);
 });
