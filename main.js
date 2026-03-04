@@ -20,9 +20,9 @@ let sessionActive = false;
 let messages = [];
 
 const SENTENCE_PUNCTUATIONS = ['.', '?', '!', ':', ';', '。', '？', '！', '：', '；'];
-const AVATAR_CHARACTER = 'Harry';
-const AVATAR_STYLE = 'graceful-sitting';
-const TTS_VOICE = 'en-US-ChristopherNeural';
+const AVATAR_CHARACTER = 'lisa';
+const AVATAR_STYLE = 'graceful';
+const TTS_VOICE = 'en-US-AvaMultilingualNeural';
 
 // ── DOM References ─────────────────────────────────────
 const $ = (id) => document.getElementById(id);
@@ -207,6 +207,7 @@ async function initializeAvatar(authToken, region, iceData) {
         await setupWebRTC(iceData);
     } catch (err) {
         console.error('[WebSocket Status] ✗ Avatar initialization failed:', err.message);
+        console.dir(err, { depth: null });
         setStatus('Avatar Error', 'error');
         throw err;
     }
@@ -311,7 +312,7 @@ async function setupWebRTC(iceData) {
     peerConnection.addTransceiver('audio', { direction: 'sendrecv' });
 
     // Start avatar session
-    console.log('Sending Harry Manifest: ' + JSON.stringify({ character: 'Harry', style: 'graceful-sitting', voice: 'en-US-ChristopherNeural' }));
+    console.log('Sending Lisa Rescue Manifest: ' + JSON.stringify({ talkingAvatarCharacter: 'lisa', talkingAvatarStyle: 'graceful', voiceName: 'en-US-AvaMultilingualNeural' }));
     setLoading('Summoning the Guide…');
 
     const result = await avatarSynthesizer.startAvatarAsync(peerConnection);
@@ -320,9 +321,11 @@ async function setupWebRTC(iceData) {
         console.log(`[WebSocket Status] ✓ Avatar started. Result ID: ${result.resultId}`);
     } else {
         console.error(`[WebSocket Status] ✗ Avatar failed to start. Result ID: ${result.resultId}`);
+        console.dir(result, { depth: null });
         if (result.reason === SpeechSDK.ResultReason.Canceled) {
             const details = SpeechSDK.CancellationDetails.fromResult(result);
             console.error('[WebSocket Status] Cancellation details:', details.errorDetails);
+            console.dir(details, { depth: null });
             throw new Error(details.errorDetails);
         }
     }
