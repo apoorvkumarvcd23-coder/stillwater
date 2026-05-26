@@ -8,7 +8,7 @@ window.localStorage.clear();
 console.log('[RESET] Session & local storage cleared');
 
 // ── Backend URL (production) ──────────────────────────
-const BACKEND_URL = 'https://stillwater-zafy.onrender.com';
+const BACKEND_URL = 'https://stillwater-backend.onrender.com';
 
 const SpeechSDK = window.SpeechSDK;
 
