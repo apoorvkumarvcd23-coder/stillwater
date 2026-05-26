@@ -622,9 +622,8 @@ document.body.appendChild(backendLabel);
 
 async function checkBackendHealth() {
     try {
-        const res = await fetch(`${BACKEND_URL}/api/get-speech-token`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+        const res = await fetch(`${BACKEND_URL}/api/health`, {
+            method: 'GET',
             signal: AbortSignal.timeout(5000),
         });
         // Even a 4xx/5xx means the server is reachable

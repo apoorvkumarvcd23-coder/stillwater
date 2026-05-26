@@ -35,6 +35,9 @@ for (const v of requiredVars) {
 }
 console.log(envOk ? '[ENV CHECK] ✓ All variables present.\n' : '[ENV CHECK] ✗ Some variables are MISSING — endpoints will fail.\n');
 
+// ── GET /api/health ───────────────────────────────────
+app.get('/api/health', (req, res) => res.json({ ok: true }));
+
 // ── POST /api/get-speech-token ────────────────────────
 // Exchanges the subscription key for a short-lived JWT
 app.post('/api/get-speech-token', async (req, res) => {
